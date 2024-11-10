@@ -1,0 +1,1 @@
+ app which has a chat frontend - like customer support
