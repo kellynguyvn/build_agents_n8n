@@ -1,0 +1,123 @@
+{
+  "name": "Receive messages from a topic via Kafka and send an SMS",
+  "nodes": [
+    {
+      "parameters": {
+        "topic": "topic_test",
+        "groupId": "n8n",
+        "options": {
+          "jsonParseMessage": true
+        }
+      },
+      "name": "Kafka Trigger",
+      "type": "n8n-nodes-base.kafkaTrigger",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "dfe2151e-ae04-458f-b5f7-2918e24ec2fe",
+      "credentials": {
+        "kafka": {
+          "id": "Ong51cxbrysCFKqF",
+          "name": "Kafka account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$node[\"Kafka Trigger\"].json[\"message\"][\"temp\"]}}",
+              "operation": "larger",
+              "value2": 50
+            }
+          ]
+        }
+      },
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        580,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "ba272d65-6775-4e63-8855-664b377e0062"
+    },
+    {
+      "parameters": {
+        "from": "Vonage APIs",
+        "message": "=Alert!\nThe value of temp is {{$node[\"Kafka Trigger\"].json[\"message\"][\"temp\"]}}.",
+        "additionalFields": {}
+      },
+      "name": "Vonage",
+      "type": "n8n-nodes-base.vonage",
+      "position": [
+        780,
+        140
+      ],
+      "typeVersion": 1,
+      "id": "0c98c8a8-3558-4477-94e3-dff1ff900337",
+      "credentials": {
+        "vonageApi": {
+          "id": "0qN5xDtNkVvlqQGm",
+          "name": "Vonage account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "NoOp",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        780,
+        340
+      ],
+      "typeVersion": 1,
+      "id": "57a75be8-d929-4c23-a156-95754bc1ab93"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Vonage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NoOp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kafka Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "c25c37de-7ddf-4e53-aa93-0244ff9ac1b5",
+  "meta": {
+    "templateId": "814",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "64d2904cdd6ce5ff0f6c76ffc9e2f8f618e2cc946f75c19c0ea4427d5836c40f"
+  },
+  "id": "ZNRhMJNEL5RSlPpq",
+  "tags": []
+}
